@@ -11,7 +11,7 @@ import os
 
 # Page config
 st.set_page_config(page_title="RAG PDF Chat", page_icon="📚")
-st.title("Chatter avec Lapeyre")
+st.title("💬 Chatter avec Lapeyre")
 
 # Sidebar for PDF upload and settings
 with st.sidebar:
