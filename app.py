@@ -11,27 +11,28 @@ import os
 
 # Page config
 st.set_page_config(page_title="RAG PDF Chat", page_icon="📚")
-st.title("📚 RAG PDF Chat with Ollama")
+st.title("Chatter avec Lapeyre")
 
 # Sidebar for PDF upload and settings
 with st.sidebar:
-    st.header("Settings")
+    st.header("Paramètres")
 
     # Model selection
     model_name = st.selectbox(
-        "Select Ollama Model",
+        "Model IA",
         ["mistral", "llama2", "llama3", "phi"],
         index=0
     )
 
-    st.header("Upload PDF")
+    st.header("PDF")
     uploaded_files = st.file_uploader(
-        "Choose PDF files",
+        "Choix PDF",
         type="pdf",
         accept_multiple_files=True
+
     )
 
-    process_button = st.button("Process PDFs")
+    process_button = st.button("Traiter PDFs")
 
 # Initialize session state
 if "vectorstore" not in st.session_state:
@@ -41,7 +42,7 @@ if "messages" not in st.session_state:
 
 # Process PDFs
 if process_button and uploaded_files:
-    with st.spinner("Processing PDFs..."):
+    with st.spinner("Traitement PDFs..."):
         try:
             all_docs = []
 
@@ -74,10 +75,10 @@ if process_button and uploaded_files:
                 embedding=embeddings
             )
 
-            st.sidebar.success(f"Processed {len(uploaded_files)} PDF(s) with {len(splits)} chunks!")
+            st.sidebar.success(f"{len(uploaded_files)} PDF(s) traités avec {len(splits)} chunks!")
 
         except Exception as e:
-            st.sidebar.error(f"Error processing PDFs: {str(e)}")
+            st.sidebar.error(f"Error traitement PDFs: {str(e)}")
 
 # Display chat messages
 for message in st.session_state.messages:
@@ -85,9 +86,9 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Chat input
-if prompt := st.chat_input("Ask a question about your PDFs"):
+if prompt := st.chat_input("Posez une question sur vos PDFs"):
     if st.session_state.vectorstore is None:
-        st.warning("Please upload and process PDFs first!")
+        st.warning("Veuillez déposer des PDFs avant de poser une question.")
     else:
         # Add user message
         st.session_state.messages.append({"role": "user", "content": prompt})
@@ -96,7 +97,7 @@ if prompt := st.chat_input("Ask a question about your PDFs"):
 
         # Generate response
         with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
+            with st.spinner("Reflexion..."):
                 try:
                     # Create RAG chain
                     llm = Ollama(model=model_name, temperature=0)
@@ -132,12 +133,12 @@ if prompt := st.chat_input("Ask a question about your PDFs"):
                     st.session_state.messages.append({"role": "assistant", "content": answer})
 
                 except Exception as e:
-                    error_msg = f"Error generating response: {str(e)}"
+                    error_msg = f"Error response: {str(e)}"
                     st.error(error_msg)
                     st.session_state.messages.append({"role": "assistant", "content": error_msg})
 
 # Info section
-with st.expander("ℹ️ How to use"):
+with st.expander("ℹ️ Comment utiliser"):
     st.markdown("""
     1. **Install Ollama**: Download from https://ollama.ai
     2. **Pull a model**: Run `ollama pull llama2` in terminal
