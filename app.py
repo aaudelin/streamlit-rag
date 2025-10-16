@@ -20,7 +20,7 @@ with st.sidebar:
     # Model selection
     model_name = st.selectbox(
         "Select Ollama Model",
-        ["llama2", "mistral", "llama3", "phi"],
+        ["mistral", "llama2", "llama3", "phi"],
         index=0
     )
 
@@ -101,14 +101,15 @@ if prompt := st.chat_input("Ask a question about your PDFs"):
                     # Create RAG chain
                     llm = Ollama(model=model_name, temperature=0)
 
-                    template = """Use the following pieces of context to answer the question at the end. 
-                    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+                    template = """Utilise les éléments de contexte suivants pour répondre à la question à la fin.
+                    Si tu ne connais pas la réponse, dis simplement que tu ne sais pas, n'essaie pas d'inventer une réponse.
+                    Réponds TOUJOURS en français, quelle que soit la langue de la question.
 
-                    Context: {context}
+                    Contexte: {context}
 
                     Question: {question}
 
-                    Answer:"""
+                    Réponse:"""
 
                     prompt_template = PromptTemplate(
                         template=template,
