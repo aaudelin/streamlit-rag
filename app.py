@@ -102,11 +102,16 @@ if prompt := st.chat_input("Posez une question sur vos PDFs"):
                     # Create RAG chain
                     llm = Ollama(model=model_name, temperature=0)
 
-                    template = """Utilise les éléments de contexte suivants pour répondre à la question à la fin.
-                    Si tu ne connais pas la réponse, dis simplement que tu ne sais pas, n'essaie pas d'inventer une réponse.
-                    Réponds TOUJOURS en français, quelle que soit la langue de la question.
+                    template = """Tu es un assistant qui répond UNIQUEMENT en utilisant les informations fournies dans le contexte ci-dessous.
+                    Tu NE DOIS PAS utiliser tes connaissances générales ou chercher des informations sur internet.
 
-                    Contexte: {context}
+                    RÈGLES IMPORTANTES:
+                    - Réponds UNIQUEMENT si la réponse se trouve explicitement dans le contexte fourni
+                    - Si l'information n'est pas dans le contexte, réponds EXACTEMENT: "Je n'ai pas trouvé cette information dans les documents fournis. Un ticket sera créé pour traiter votre demande."
+                    - Ne devine JAMAIS et n'invente JAMAIS d'informations
+                    - Réponds TOUJOURS en français, quelle que soit la langue de la question
+
+                    Contexte fourni par les PDFs: {context}
 
                     Question: {question}
 
