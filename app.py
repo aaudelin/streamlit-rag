@@ -1,9 +1,8 @@
 import streamlit as st
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_community.vectorstores import Chroma
-from langchain_community.llms import Ollama
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 import tempfile
@@ -33,6 +32,13 @@ with st.sidebar:
     )
 
     process_button = st.button("Traiter PDFs")
+
+    # Clear database button
+    if st.button("🗑️ Nettoyer la base de données", type="secondary"):
+        st.session_state.vectorstore = None
+        st.session_state.messages = []
+        st.sidebar.success("Base de données nettoyée !")
+        st.rerun()
 
 # Initialize session state
 if "vectorstore" not in st.session_state:
@@ -100,7 +106,7 @@ if prompt := st.chat_input("Posez une question sur vos PDFs"):
             with st.spinner("Reflexion..."):
                 try:
                     # Create RAG chain
-                    llm = Ollama(model=model_name, temperature=0)
+                    llm = OllamaLLM(model=model_name, temperature=0)
 
                     template = """Tu es un assistant qui répond UNIQUEMENT en utilisant les informations fournies dans le contexte ci-dessous.
                     Tu NE DOIS PAS utiliser tes connaissances générales ou chercher des informations sur internet.
